@@ -27,6 +27,7 @@ import android.location.LocationManager;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.util.Size;
 import android.widget.TextView;
@@ -110,6 +111,13 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        }, 6000);
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
 
@@ -118,8 +126,7 @@ public final class CameraXLivePreviewActivity extends AppCompatActivity
                     getApplicationContext(),
                     "CameraX is only supported on SDK version >=21. Current SDK version is "
                             + VERSION.SDK_INT,
-                    Toast.LENGTH_LONG)
-                    .show();
+                    Toast.LENGTH_LONG).show();
             return;
         }
 

@@ -43,6 +43,7 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
     //private HiddenCameraFragment mHiddenCameraFragment;
     TextView alarmTV;
     Button uploadBtn;
+    Button login;
     Boolean isFirstTime;
     Button sendPost;
     String regImgURL;
@@ -112,9 +114,11 @@ public class MainActivity extends AppCompatActivity {
     public static final int APP_PERMISSION_REQUEST = 100;
     private static final int CAMERA_REQUEST = 100;
     public static final String SHARED_PREF = "com.domain.covidandro";
-    private static final Intent[] POWERMANAGER_INTENTS = {
+
+    Intent[] POWERMANAGER_INTENTS = {
             new Intent().setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity")),
             new Intent().setComponent(new ComponentName("com.letv.android.letvsafe", "com.letv.android.letvsafe.AutobootManageActivity")),
+            new Intent().setComponent(new ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.startupmgr.ui.StartupNormalAppListActivity")),
             new Intent().setComponent(new ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.optimize.process.ProtectActivity")),
             new Intent().setComponent(new ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.appcontrol.activity.StartupAppControlActivity")),
             new Intent().setComponent(new ComponentName("com.coloros.safecenter", "com.coloros.safecenter.permission.startup.StartupAppListActivity")),
@@ -123,9 +127,12 @@ public class MainActivity extends AppCompatActivity {
             new Intent().setComponent(new ComponentName("com.iqoo.secure", "com.iqoo.secure.ui.phoneoptimize.AddWhiteListActivity")),
             new Intent().setComponent(new ComponentName("com.iqoo.secure", "com.iqoo.secure.ui.phoneoptimize.BgStartUpManager")),
             new Intent().setComponent(new ComponentName("com.vivo.permissionmanager", "com.vivo.permissionmanager.activity.BgStartUpManagerActivity")),
+            new Intent().setComponent(new ComponentName("com.samsung.android.lool", "com.samsung.android.sm.battery.ui.BatteryActivity")),
             new Intent().setComponent(new ComponentName("com.samsung.android.lool", "com.samsung.android.sm.ui.battery.BatteryActivity")),
             new Intent().setComponent(new ComponentName("com.htc.pitroad", "com.htc.pitroad.landingpage.activity.LandingPageActivity")),
-            new Intent().setComponent(new ComponentName("com.asus.mobilemanager", "com.asus.mobilemanager.MainActivity"))};
+            new Intent().setComponent(new ComponentName("com.asus.mobilemanager", "com.asus.mobilemanager.MainActivity")),
+            new Intent().setComponent(new ComponentName("com.transsion.phonemanager", "com.itel.autobootmanager.activity.AutoBootMgrActivity"))
+    };
     String id;
     String imageFilePath="";
 
@@ -337,7 +344,7 @@ public class MainActivity extends AppCompatActivity {
 
                         Toast.makeText(MainActivity.this, new String(response.data), Toast.LENGTH_LONG).show();
 
-                        uploadBtn.setVisibility(View.GONE);
+                       // uploadBtn.setVisibility(View.GONE);
                         SharedPreferences mPrefs = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
                         SharedPreferences.Editor prefsEditor = mPrefs.edit();
                         prefsEditor.putBoolean("first_time", false);
@@ -460,10 +467,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK)
-        {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
 
             getLastLocation();
             final Bitmap[] gphoto = {null};
@@ -471,26 +477,26 @@ public class MainActivity extends AppCompatActivity {
             //Bitmap photo = (Bitmap) data.getExtras().get("data");
             //Glide.with(this).load((Bitmap)data.getExtras().get("data")).into()
             //Bitmap gphoto = Glide.with(MainActivity.this).asBitmap().load()
-               Glide.with(MainActivity.this).asBitmap().load(imageFilePath).into(new CustomTarget<Bitmap>(){
-                    @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+            Glide.with(MainActivity.this).asBitmap().load(imageFilePath).into(new CustomTarget<Bitmap>() {
+                @Override
+                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
 //                        gphoto[0] = resource;
 //                        StorageReference ref
 //                                = FirebaseStorage.getInstance().getReference()
 //                                .child(
 //                                        "images/"
 //                                                + id);
-                        byte[] BYTE;
-                        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                        //resource.compress(Bitmap.CompressFormat.JPEG,50,bytes);
-                        //BYTE = bytes.toByteArray();
-                        Bitmap resource2;
-                     resource2 = getResizedBitmap(resource, 200);
+                    byte[] BYTE;
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    //resource.compress(Bitmap.CompressFormat.JPEG,50,bytes);
+                    //BYTE = bytes.toByteArray();
+                    Bitmap resource2;
+                    resource2 = getResizedBitmap(resource, 200);
 //                        res3 = ImageUtils.getInstant().getCompressedBitmap(getImageUri(MainActivity.this,resource).getPath());
-                        //resource2 = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);
+                    //resource2 = BitmapFactory.decodeByteArray(BYTE,0,BYTE.length);
 
 
-                        uploadImage(resource2);
+                    uploadImage(resource2);
 
 //                        ref.putFile(getImageUri(MainActivity.this, resource2)).addOnSuccessListener(
 //                                new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -511,7 +517,6 @@ public class MainActivity extends AppCompatActivity {
 //                                            }
 //                                        }
 //                                );
-
 
 
 //                        final Handler handler = new Handler();
@@ -579,17 +584,14 @@ public class MainActivity extends AppCompatActivity {
 //                        }, 3000);
 
 
+                }
 
+                @Override
+                public void onLoadCleared(@Nullable Drawable placeholder) {
 
+                }
 
-                    }
-
-                   @Override
-                   public void onLoadCleared(@Nullable Drawable placeholder) {
-
-                   }
-
-               });
+            });
 
             Bitmap rotPhoto = null;
 //            try {
@@ -602,8 +604,7 @@ public class MainActivity extends AppCompatActivity {
 //            }
 
 
-
-            Log.d("im901",Uri.parse(imageFilePath).toString());
+            Log.d("im901", Uri.parse(imageFilePath).toString());
 
 //            ref.putFile(Uri.fromFile(new File(imageFilePath))).addOnSuccessListener(
 //                    new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -625,18 +626,7 @@ public class MainActivity extends AppCompatActivity {
 //                    );
 
 
-
-
-
-
-
             //startService(new Intent(this, DemoCamService.class));
-
-
-
-
-
-
 
 
         }
@@ -721,7 +711,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        EditText ip=(EditText)findViewById(R.id.ipadd);
+        login=findViewById(R.id.login);
 
+        //login.setVisibility(View.VISIBLE);
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getApplicationContext(),login.class);
+                intent.putExtra("STRING_I_NEED", ip.getText().toString());
+                startActivity(intent);
+            }
+        });
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                     Uri.parse("package:" + getPackageName()));
@@ -746,49 +747,52 @@ public class MainActivity extends AppCompatActivity {
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        uploadBtn = (Button)findViewById(R.id.uploadBtn);
-        uploadBtn.setVisibility(View.GONE);
+//        uploadBtn = (Button)findViewById(R.id.uploadBtn);
+        //uploadBtn.setVisibility(View.GONE);
         sendPost = (Button) findViewById(R.id.sendPost_main);
-        sendPost.setVisibility(View.GONE);
+        //sendPost.setVisibility(View.GONE);
 
 
-        sendPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-//                final Handler handler = new Handler();
-//                handler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
+//
+//        uploadBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+////                final Handler handler = new Handler();
+////                handler.postDelayed(new Runnable() {
+////                    @Override
+////                    public void run() {
+////
+////
+////
+////                    }
+////                },2000);
 //
 //
+////                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+////                    startForegroundService(new Intent(MainActivity.this, Camera2Service.class));
+////                } else {
+////                    startService(new Intent(MainActivity.this, Camera2Service.class));
+////                }
 //
-//                    }
-//                },2000);
-
-
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                    startForegroundService(new Intent(MainActivity.this, Camera2Service.class));
-//                } else {
-//                    startService(new Intent(MainActivity.this, Camera2Service.class));
-//                }
-
-                startService(new Intent(MainActivity.this, Camera2Service.class));
-
-
-                //startService(new Intent(MainActivity.this, DemoCamService.class));
-            }
-        });
+//                startService(new Intent(MainActivity.this, Camera2Service.class));
+//
+//
+//                //startService(new Intent(MainActivity.this, DemoCamService.class));
+//            }
+//        });
 
         //mDatabase = FirebaseDatabase.getInstance().getReference("users");
 
         SharedPreferences mPrefs = getSharedPreferences(SHARED_PREF, MODE_PRIVATE); //add key
         isFirstTime = mPrefs.getBoolean("first_time", true);
         if(isFirstTime){
-            uploadBtn.setVisibility(View.VISIBLE);
+            //checkg(nums,mid,target)==1
+            // uploadBtn.setVisibility(View.VISIBLE);
             //id = mDatabase.push().getKey();
             id = UUID.randomUUID().toString();
-            uploadBtn.setOnClickListener(new View.OnClickListener() {
+            sendPost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
@@ -816,6 +820,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                     Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
+                    intent.putExtra("STRING_I_NEED", ip.getText().toString());
                     startActivity(intent);
 
 
@@ -831,7 +836,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         }else {
-            sendPost.setVisibility(View.VISIBLE);
+            //sendPost.setVisibility(View.VISIBLE);
         }
 
 
@@ -854,6 +859,24 @@ public class MainActivity extends AppCompatActivity {
         pref.apply();
         final SharedPreferences sp =    getSharedPreferences("allow_notify", MODE_PRIVATE);
         if(!sp.getBoolean("protected",false)) {
+            Intent[] POWERMANAGER_INTENTS = {
+                    new Intent().setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity")),
+                    new Intent().setComponent(new ComponentName("com.letv.android.letvsafe", "com.letv.android.letvsafe.AutobootManageActivity")),
+                    new Intent().setComponent(new ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.startupmgr.ui.StartupNormalAppListActivity")),
+                    new Intent().setComponent(new ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.optimize.process.ProtectActivity")),
+                    new Intent().setComponent(new ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.appcontrol.activity.StartupAppControlActivity")),
+                    new Intent().setComponent(new ComponentName("com.coloros.safecenter", "com.coloros.safecenter.permission.startup.StartupAppListActivity")),
+                    new Intent().setComponent(new ComponentName("com.coloros.safecenter", "com.coloros.safecenter.startupapp.StartupAppListActivity")),
+                    new Intent().setComponent(new ComponentName("com.oppo.safe", "com.oppo.safe.permission.startup.StartupAppListActivity")),
+                    new Intent().setComponent(new ComponentName("com.iqoo.secure", "com.iqoo.secure.ui.phoneoptimize.AddWhiteListActivity")),
+                    new Intent().setComponent(new ComponentName("com.iqoo.secure", "com.iqoo.secure.ui.phoneoptimize.BgStartUpManager")),
+                    new Intent().setComponent(new ComponentName("com.vivo.permissionmanager", "com.vivo.permissionmanager.activity.BgStartUpManagerActivity")),
+                    new Intent().setComponent(new ComponentName("com.samsung.android.lool", "com.samsung.android.sm.battery.ui.BatteryActivity")),
+                    new Intent().setComponent(new ComponentName("com.samsung.android.lool", "com.samsung.android.sm.ui.battery.BatteryActivity")),
+                    new Intent().setComponent(new ComponentName("com.htc.pitroad", "com.htc.pitroad.landingpage.activity.LandingPageActivity")),
+                    new Intent().setComponent(new ComponentName("com.asus.mobilemanager", "com.asus.mobilemanager.MainActivity")),
+                    new Intent().setComponent(new ComponentName("com.transsion.phonemanager", "com.itel.autobootmanager.activity.AutoBootMgrActivity"))
+            };
             for (final Intent intent : POWERMANAGER_INTENTS)
                 if (getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY) != null) {
 
@@ -868,26 +891,26 @@ public class MainActivity extends AppCompatActivity {
                                     handler.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
-                                            spotLight = new SpotlightView.Builder(MainActivity.this)
-                                                    .introAnimationDuration(800)
-                                                    .enableRevealAnimation(true)
-                                                    .performClick(true)
-                                                    .fadeinTextDuration(400)
-                                                    .headingTvColor(Color.parseColor("#eb273f"))
-                                                    .headingTvSize(32)
-                                                    .headingTvText("Register")
-                                                    .subHeadingTvColor(Color.parseColor("#ffffff"))
-                                                    .subHeadingTvSize(16)
-                                                    .subHeadingTvText("Enter your details &\nCapture Your Photo.")
-                                                    .maskColor(Color.parseColor("#dc000000"))
-                                                    .target(uploadBtn)
-                                                    .lineAnimDuration(400)
-                                                    .lineAndArcColor(Color.parseColor("#eb273f"))
-                                                    .dismissOnTouch(true)
-                                                    .dismissOnBackPress(true)
-                                                    .enableDismissAfterShown(true)
-                                                    .usageId("sp1") //UNIQUE ID
-                                                    .show();
+//                                            spotLight = new SpotlightView.Builder(MainActivity.this)
+//                                                    .introAnimationDuration(800)
+//                                                    .enableRevealAnimation(true)
+//                                                    .performClick(true)
+//                                                    .fadeinTextDuration(400)
+//                                                    .headingTvColor(Color.parseColor("#eb273f"))
+//                                                    .headingTvSize(32)
+//                                                    .headingTvText("Register")
+//                                                    .subHeadingTvColor(Color.parseColor("#ffffff"))
+//                                                    .subHeadingTvSize(16)
+//                                                    .subHeadingTvText("Enter your details &\nCapture Your Photo.")
+//                                                    .maskColor(Color.parseColor("#dc000000"))
+//                                                    .target(uploadBtn)
+//                                                    .lineAnimDuration(400)
+//                                                    .lineAndArcColor(Color.parseColor("#eb273f"))
+//                                                    .dismissOnTouch(true)
+//                                                    .dismissOnBackPress(true)
+//                                                    .enableDismissAfterShown(true)
+//                                                    .usageId("sp1") //UNIQUE ID
+//                                                    .show();
                                         }
                                     },1000);
 

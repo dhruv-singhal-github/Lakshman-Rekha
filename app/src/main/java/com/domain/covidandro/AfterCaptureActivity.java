@@ -68,7 +68,7 @@ public class AfterCaptureActivity extends AppCompatActivity {
     double usrLat = 0.0;
     double usrLong = 0.0;
     private RequestQueue rQueue;
-    private String upload_URL = "http://piyush16.pythonanywhere.com/upload";
+    private String upload_URL = "http://192.168.1.12:8080/authenticate/post";
     public static final String SHARED_PREF = "com.domain.covidandro";
     private SpotlightView spotLight;
     Button sendPost;
@@ -95,7 +95,7 @@ public class AfterCaptureActivity extends AppCompatActivity {
         );
 
         if(isFirstTime) {
-            sendPost.setVisibility(View.GONE);
+            //sendPost.setVisibility(View.GONE);
         }
 
         sendPost.setOnClickListener(new View.OnClickListener() {
@@ -258,31 +258,31 @@ public class AfterCaptureActivity extends AppCompatActivity {
 
 
 
-                        sendPost.setVisibility(View.VISIBLE);
+                       // sendPost.setVisibility(View.VISIBLE);
                         final Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                spotLight = new SpotlightView.Builder(AfterCaptureActivity.this)
-                                        .introAnimationDuration(800)
-                                        .enableRevealAnimation(true)
-                                        .performClick(true)
-                                        .fadeinTextDuration(400)
-                                        .headingTvColor(Color.parseColor("#eb273f"))
-                                        .headingTvSize(32)
-                                        .headingTvText("Captures Image In BG")
-                                        .subHeadingTvColor(Color.parseColor("#ffffff"))
-                                        .subHeadingTvSize(16)
-                                        .subHeadingTvText("Front cam image is sent to server for face match.")
-                                        .maskColor(Color.parseColor("#dc000000"))
-                                        .target(sendPost)
-                                        .lineAnimDuration(400)
-                                        .lineAndArcColor(Color.parseColor("#eb273f"))
-                                        .dismissOnTouch(true)
-                                        .dismissOnBackPress(true)
-                                        .enableDismissAfterShown(true)
-                                        .usageId("sp2") //UNIQUE ID
-                                        .show();
+//                                spotLight = new SpotlightView.Builder(AfterCaptureActivity.this)
+//                                        .introAnimationDuration(800)
+//                                        .enableRevealAnimation(true)
+//                                        .performClick(true)
+//                                        .fadeinTextDuration(400)
+//                                        .headingTvColor(Color.parseColor("#eb273f"))
+//                                        .headingTvSize(32)
+//                                        .headingTvText("Captures Image In BG")
+//                                        .subHeadingTvColor(Color.parseColor("#ffffff"))
+//                                        .subHeadingTvSize(16)
+//                                        .subHeadingTvText("Front cam image is sent to server for face match.")
+//                                        .maskColor(Color.parseColor("#dc000000"))
+//                                        .target(sendPost)
+//                                        .lineAnimDuration(400)
+//                                        .lineAndArcColor(Color.parseColor("#eb273f"))
+//                                        .dismissOnTouch(true)
+//                                        .dismissOnBackPress(true)
+//                                        .enableDismissAfterShown(true)
+//                                        .usageId("sp2") //UNIQUE ID
+//                                        .show();
                             }
                         },1000);
                         prefsEditor.putString("usr_id",id);
